@@ -6,6 +6,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.generic import ListView
 from django.core.mail import send_mail
 from taggit.models import Tag
+from django.db.models import Count
 # Create your views here.
 
 
@@ -36,7 +37,16 @@ def post_detail(request, year, month, day, post):
     comments = post.comments.filter(active=True)
     form = CommentForm()
 
-    return render(request, 'blog/post/detail.html', {'post': post, 'comments': comments, 'form': form})
+    post_tags_ids = post.tags.values_list('id', flat=True)
+    similar_posts = Post.published.filter(tags__in=post_tags_ids).exclude(id=post.id)
+    similar_posts = similar_posts.annotate(some_tags=Count('tags')).order_by('-some_tags', '-publish')[:4]
+    ctx = {
+        'post': post,
+        'comments': comments,
+        'form': form,
+        'similar_posts': similar_posts,
+    }
+    return render(request, 'blog/post/detail.html', ctx)
 
 
 def post_share(request, post_id):
