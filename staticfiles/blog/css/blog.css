@@ -35,7 +35,7 @@ h2 {
 }
 
 p.date {
-    color:#ccc;
+    color: rgba(117, 115, 115, 0.96);
     font-family: georgia, serif;
     font-size: 12px;
     font-style: italic;
