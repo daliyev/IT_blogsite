@@ -30,12 +30,12 @@ h2 {
     float:right;
     width:30%;
     padding:10px;
-    background: #a1a1a1;
+    background:#efefef;
     height:100%;
 }
 
 p.date {
-    color: rgba(234, 188, 188, 0.87);
+    color: #8c8b8b;
     font-family: georgia, serif;
     font-size: 12px;
     font-style: italic;
@@ -58,7 +58,7 @@ input, textarea {
     clear:both;
     float:left;
     margin:0 0 10px;
-    background: #a1a1a1;
+    background:#ededed;
     border:0;
     padding:6px 10px;
     font-size:12px;
@@ -66,7 +66,7 @@ input, textarea {
 input[type=submit] {
     font-weight:bold;
     background:#00abff;
-    color: #a1a1a1;
+    color:#fff;
     padding:10px 20px;
     font-size:14px;
     text-transform:uppercase;
@@ -83,10 +83,10 @@ input[type=submit] {
     padding:10px;
 }
 .comment:nth-child(even) {
-    background: rgb(161, 161, 161);
+    background:#efefef;
 }
 .comment .info {
     font-weight:bold;
     font-size:12px;
-    color:#666;
+    color: #726f6f;
 }

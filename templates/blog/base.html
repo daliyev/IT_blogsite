@@ -1,3 +1,4 @@
+{% load blog_tags %}
 {% load static %}
 <!DOCTYPE html>
 <html>
@@ -11,10 +12,24 @@
             {% endblock %}
         </div>
          <div id="sidebar">
-             <a href="">
+             <a href="{% url 'blog:post_list' %}">
              <h2>My blog</h2>
              </a>
-             <p>This is my blog.</p>
+             <p>
+                 This is my blog.<br>
+                 I've written <b>{% total_posts %}</b> posts so far.
+             </p>
+             <h3>Latest posts</h3>
+             {% show_latest_posts %}
+             <h3>Most commented posts</h3>
+             {% get_most_commented_posts as most_commented_posts %}
+             <ul>
+                 {% for post in most_commented_posts %}
+                     <li>
+                        <a href="{{ post.get_absolute_url }}">{{ post.title|truncatewords:10|linebreaks }}</a>
+                     </li>
+                 {% endfor %}
+             </ul>
          </div>
     </body>
 </html>
