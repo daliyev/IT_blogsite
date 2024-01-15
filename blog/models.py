@@ -3,6 +3,10 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 from django.urls import reverse
 from taggit.managers import TaggableManager
+
+from django.contrib.postgres.search import SearchVector, SearchVectorField
+from .search import CustomSearchConfig
+
 # Create your models here.
 
 
@@ -29,6 +33,7 @@ class Post(models.Model):
     status = models.CharField(max_length=2,
                               choices=Status.choices,
                               default=Status.DRAFT)
+
     tags = TaggableManager()
 
     object = models.Manager()

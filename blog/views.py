@@ -1,12 +1,19 @@
+from django.utils import timezone
+
+from django.contrib.auth.models import User
 from django.shortcuts import render, get_object_or_404
 from django.views.decorators.http import require_POST
-from .forms import EmailPostForm, CommentForm
+from .forms import EmailPostForm, CommentForm, SearchForm
 from .models import Post, Comment
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.generic import ListView
 from django.core.mail import send_mail
 from taggit.models import Tag
 from django.db.models import Count
+
+from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
+from .search import CustomSearchConfig
+
 # Create your views here.
 
 
@@ -78,3 +85,39 @@ def post_comment(request, post_id):
         comment.post = post
         comment.save()
     return render(request, 'blog/post/comment.html', {'post': post, 'form': form, 'comment': comment})
+
+
+def post_search(request):
+    form = SearchForm()
+    query = None
+    results = []
+
+    if 'query' in request.GET:
+        form = SearchForm(request.GET)
+        if form.is_valid():
+            query = form.cleaned_data['query']
+            search_vector = SearchVector('title', weight='A', config='russian') + SearchVector('body', weight='B', config='russian')
+            search_query = SearchQuery(query, config='russian')
+            results = Post.published.annotate(search=search_vector, rank=SearchRank(search_vector, search_query)).filter(rank__gte=0.3).order_by('-rank')
+
+    ctx = {
+        'form': form,
+        'query': query,
+        'results': results,
+    }
+
+    return render(request, 'blog/post/search.html', ctx)
+
+
+def tests(request):
+    month = timezone.now().month
+    year = timezone.now().year
+    user = User.objects.prefetch_related('blog_posts').annotate(com=Count('blog_posts'))
+    monthly_post_count = Post.published.filter(created__month=month, created__year=year).count()
+    ctx = {
+        'user': user,
+        'monthly_post_count': monthly_post_count,
+
+    }
+    print(ctx)
+    return render(request, 'test.html', ctx)

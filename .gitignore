@@ -5,3 +5,4 @@ venv
 migrations
 db.sqlite3
 /templates/test.html
+mysite_data.json
